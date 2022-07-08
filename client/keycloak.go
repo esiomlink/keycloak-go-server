@@ -1,6 +1,6 @@
 package client
 
-import "github.com/Nerzal/gocloak/v7"
+import "github.com/Nerzal/gocloak/v11"
 
 type Keycloak struct {
 	Gocloak      gocloak.GoCloak // keycloak client
