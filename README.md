@@ -23,14 +23,12 @@
 ########################
 
 => request whith postman or insomnia 
-    
     => POST - http://localhost:8081/login 
     
         json {
 	        "username": "myuser",
 	        "password":"xxx"
         }
-	
         // this login request get acces token (save this token you need for other get request)
 
     => GET - http://localhost:8081/docs
