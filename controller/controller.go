@@ -74,7 +74,7 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 
 func (c *Controller)  GetUser(w http.ResponseWriter, r *http.Request) {
 	accesToken := r.Header.Get("Authorization")
-	accesToken= strings.Replace(accesToken, "Bearer ", "", 1)
+	accesToken = strings.Replace(accesToken, "Bearer ", "", 1)
 
 	//	token = auth.extractBearerToken(token)
 fmt.Printf("token=>>>>>>>>> %v\n",accesToken)

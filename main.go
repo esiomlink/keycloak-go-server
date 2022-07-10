@@ -12,7 +12,7 @@ import (
 func main() {
 
 	s := http.NewServer("localhost", "8081", client.NewKeycloak())
-	fmt.Println("server go")
+	fmt.Println("Server is listening at http://localhost:8081")
 	s.Listen()
 
 	quit := make(chan os.Signal)

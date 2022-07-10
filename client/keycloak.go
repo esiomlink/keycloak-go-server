@@ -1,6 +1,10 @@
 package client
 
-import "github.com/Nerzal/gocloak/v11"
+import (
+	"os"
+
+	"github.com/Nerzal/gocloak/v11"
+)
 
 type Keycloak struct {
 	Gocloak      gocloak.GoCloak // keycloak client
@@ -11,9 +15,17 @@ type Keycloak struct {
 
 func NewKeycloak() *Keycloak {
 	return &Keycloak{
-		Gocloak:      gocloak.NewClient("http://localhost:8086"),
-		ClientId:     "my-go-service",
-		ClientSecret: "pZtkW487SYPsb9BW01Te0JUl8YpXlqCv",
-		Realm:        "medium",
+		Gocloak:      gocloak.NewClient(os.Getenv("KEYCLOAK_NODE_BASE_URL")),
+		ClientId:     os.Getenv("KEYCLOAK_NODE_CLIENT_ID"),
+		ClientSecret: os.Getenv("KEYCLOAK_NODE_CLIENT_SECRET"),
+		Realm:       os.Getenv("KEYCLOAK_NODE_REALM_NAME"),
 	}
 }
+/* 
+export KEYCLOAK_NODE_BASE_URL="http://localhost:8086"
+export KEYCLOAK_NODE_REALM_NAME="medium"
+export KEYCLOAK_NODE_CLIENT_SECRET="pZtkW487SYPsb9BW01Te0JUl8YpXlqCv"
+export KEYCLOAK_NODE_CLIENT_ID="my-go-service"
+*/
+
+
