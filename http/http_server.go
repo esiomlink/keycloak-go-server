@@ -39,8 +39,8 @@ func NewServer(host, port string, keycloak *client.Keycloak) *httpServer {
 		controller.Login(writer, request)
 	}).Methods("POST")
 
-	authRouter.HandleFunc("/docs", func(writer http.ResponseWriter, request *http.Request) {
-		controller.GetDocs(writer, request)
+	authRouter.HandleFunc("/users", func(writer http.ResponseWriter, request *http.Request) {
+		controller.GetUsers(writer, request)
 	}).Methods("GET")
 
 	authRouter.HandleFunc("/user", func(writer http.ResponseWriter, request *http.Request) {

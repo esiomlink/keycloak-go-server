@@ -24,7 +24,6 @@ func (auth *keyCloakMiddleware) ExtractBearerToken(token string) string {
 func (auth *keyCloakMiddleware) VerifyToken(next http.Handler) http.Handler {
 
 	f := func(w http.ResponseWriter, r *http.Request) {
-
 		// try to extract Authorization parameter from the HTTP header
 		token := r.Header.Get("Authorization")
 

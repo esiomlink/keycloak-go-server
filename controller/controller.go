@@ -3,17 +3,20 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"keycloak-go/client"
 	"net/http"
 	"strings"
-	"time"
+
+	"github.com/Nerzal/gocloak/v11"
 )
 
-type doc struct {
-	Id   string    `json:"id"`
-	Num  string    `json:"num"`
-	Date time.Time `json:"date"`
+type UsersParams struct {
+	email     string
+	first     int
+	firstName string
+	lastName  string
+	search    string
+	username  string
 }
 
 type loginRequest struct {
@@ -71,13 +74,11 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(rsJs)
 }
 
-
-func (c *Controller)  GetUser(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) GetUser(w http.ResponseWriter, r *http.Request) {
 	accesToken := r.Header.Get("Authorization")
 	accesToken = strings.Replace(accesToken, "Bearer ", "", 1)
 
 	//	token = auth.extractBearerToken(token)
-fmt.Printf("token=>>>>>>>>> %v\n",accesToken)
 	rs, err := c.keycloak.Gocloak.GetUserInfo(
 		context.Background(),
 		accesToken,
@@ -94,25 +95,27 @@ fmt.Printf("token=>>>>>>>>> %v\n",accesToken)
 	_, _ = w.Write(rsJs)
 }
 
-func (c *Controller) GetDocs(w http.ResponseWriter, r *http.Request) {
+type user struct {
+	email string
+}
 
-	rs := []*doc{
-		{
-			Id:   "1",
-			Num:  "ABC-123",
-			Date: time.Now().UTC(),
-		},
-		{
-			Id:   "2",
-			Num:  "ABC-456",
-			Date: time.Now().UTC(),
-		},
+func (c *Controller) GetUsers(w http.ResponseWriter, r *http.Request) {
+	accesToken := r.Header.Get("Authorization")
+	accesToken = strings.Replace(accesToken, "Bearer ", "", 1)
+	params := gocloak.GetUsersParams{}
+
+	rs, err := c.keycloak.Gocloak.GetUsers(
+		context.Background(),
+		accesToken,
+		c.keycloak.Realm,
+		params,
+	)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusForbidden)
+		return
 	}
-
 	rsJs, _ := json.Marshal(rs)
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(rsJs)
-
 }
