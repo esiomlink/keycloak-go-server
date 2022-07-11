@@ -6,7 +6,6 @@ import (
 	"keycloak-go/client"
 	"net/http"
 	"strings"
-
 	"github.com/Nerzal/gocloak/v11"
 )
 
@@ -38,6 +37,12 @@ func NewController(keycloak *client.Keycloak) *Controller {
 	return &Controller{
 		keycloak: keycloak,
 	}
+}
+
+func GetAccesToken(r *http.Request) string {
+	accesToken := r.Header.Get("Authorization")
+	accesToken = strings.Replace(accesToken, "Bearer ", "", 1)
+	return accesToken
 }
 
 func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
@@ -75,10 +80,8 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Controller) GetUser(w http.ResponseWriter, r *http.Request) {
-	accesToken := r.Header.Get("Authorization")
-	accesToken = strings.Replace(accesToken, "Bearer ", "", 1)
+	accesToken := GetAccesToken(r)
 
-	//	token = auth.extractBearerToken(token)
 	rs, err := c.keycloak.Gocloak.GetUserInfo(
 		context.Background(),
 		accesToken,
@@ -95,20 +98,14 @@ func (c *Controller) GetUser(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(rsJs)
 }
 
-type user struct {
-	email string
-}
-
 func (c *Controller) GetUsers(w http.ResponseWriter, r *http.Request) {
-	accesToken := r.Header.Get("Authorization")
-	accesToken = strings.Replace(accesToken, "Bearer ", "", 1)
-	params := gocloak.GetUsersParams{}
+	accesToken := GetAccesToken(r)
 
 	rs, err := c.keycloak.Gocloak.GetUsers(
 		context.Background(),
 		accesToken,
 		c.keycloak.Realm,
-		params,
+		gocloak.GetUsersParams{},
 	)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusForbidden)

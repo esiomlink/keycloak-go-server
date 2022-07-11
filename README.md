@@ -2,27 +2,47 @@
 
 ####################
 
-=> go mod tidy // install all modules
+=> Run into terminal "go mod tidy" // install all modules
 
-=> at ./ of project run docker with docker compose // pull keycloak docker img and run at http://localhost:8086
+=> At ./ of project run docker with docker compose // pull keycloak docker img and run at http://localhost:8086
 
-=> open navigator at http://localhost:8086 (username: admin, password: admin)
+=> Open navigator at http://localhost:8086 (username: admin, password: admin)
 
-=> configur new realm name: 'medium'
+=> Configur new realm name: 'medium'
 
-=> client => create new client name: "my-go-service"
+=> Client 
+    => create new client name: "my-go-service"
 
-=> client => my-go-service => settings => "Enabled": true, "Acces type": confidential, "Direct Acces Garants Enabled": true, "Service Account Enabled":        true, "Backchannel Logout Session Required": true
+=> Client 
+    => my-go-service 
+        => settings 
+            => {
+                "Enabled": true, 
+                "Acces type": confidential, 
+                "Direct Acces Garants Enabled": true, 
+                "Service Account Enabled": true, 
+                "Backchannel Logout Session Required": true
+                }
 
-=> client => my-go-service => credentials => copy secret and add into ./client/keycloak.go => clientSecret 
+=> Client 
+    => my-go-service 
+        => credentials 
+            => copy secret and add into ./client/keycloak.go/clientSecret 
 
-=> Users => create new user whith password 
+=> Client 
+    => my-go-service 
+        => service account roles 
+            => client roles 
+                => select realm managment and add view users
 
-=> go run *.go // run project at http://localhost:8081
+=> Users 
+    => create new user whith password and more users if you want
+
+=> For run server "go run ." // run project at http://localhost:8081
 
 ########################
 
-=> request whith postman or insomnia 
+=> Request whith postman or insomnia 
 
     => POST - http://localhost:8081/login 
         json {
@@ -31,9 +51,9 @@
         }
         // this login request get acces token (save this token you need for other get request)
 
-    => GET - http://localhost:8081/docs
+    => GET - http://localhost:8081/users
         => auth : Bearer => token : your acces token
-        // get docs with middleware for auth exercice
+        // get all realm users
         
     => GET - http://localhost:8081/user
         => auth : Bearer => token : your acces token

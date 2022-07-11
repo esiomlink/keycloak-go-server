@@ -7,7 +7,6 @@ import (
 	"keycloak-go/middleware"
 	"net/http"
 	"time"
-
 	"github.com/gorilla/mux"
 )
 
