@@ -3,9 +3,11 @@ package controller
 import (
 	"context"
 	"encoding/json"
+	"io/ioutil"
 	"keycloak-go/client"
 	"net/http"
 	"strings"
+
 	"github.com/Nerzal/gocloak/v11"
 )
 
@@ -21,6 +23,9 @@ type UsersParams struct {
 type loginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+type getUserBody struct {
+	UserId string `json:"userId"`
 }
 
 type loginResponse struct {
@@ -79,13 +84,25 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(rsJs)
 }
 
-func (c *Controller) GetUser(w http.ResponseWriter, r *http.Request) {
-	accesToken := GetAccesToken(r)
+func (c *Controller) GetUserById(w http.ResponseWriter, r *http.Request) {
+		payload := getUserBody{}
 
-	rs, err := c.keycloak.Gocloak.GetUserInfo(
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+				http.Error(w, err.Error(), http.StatusForbidden)
+		}
+
+		err = json.Unmarshal(body, &payload)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusForbidden)
+		}
+
+
+	rs, err := c.keycloak.Gocloak.GetUserByID(
 		context.Background(),
-		accesToken,
+		c.keycloak.AccesToken,
 		c.keycloak.Realm,
+		payload.UserId,
 	)
 
 	if err != nil {
@@ -99,11 +116,10 @@ func (c *Controller) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Controller) GetUsers(w http.ResponseWriter, r *http.Request) {
-	accesToken := GetAccesToken(r)
 
 	rs, err := c.keycloak.Gocloak.GetUsers(
 		context.Background(),
-		accesToken,
+		c.keycloak.AccesToken,
 		c.keycloak.Realm,
 		gocloak.GetUsersParams{},
 	)

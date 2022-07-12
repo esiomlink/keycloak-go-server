@@ -16,6 +16,8 @@ type httpServer struct {
 
 func NewServer(host, port string, keycloak *client.Keycloak) *httpServer {
 
+	
+
 	// create a root router
 	router := mux.NewRouter()
 
@@ -38,12 +40,12 @@ func NewServer(host, port string, keycloak *client.Keycloak) *httpServer {
 		controller.Login(writer, request)
 	}).Methods("POST")
 
-	authRouter.HandleFunc("/users", func(writer http.ResponseWriter, request *http.Request) {
+	noAuthRouter.HandleFunc("/users", func(writer http.ResponseWriter, request *http.Request) {
 		controller.GetUsers(writer, request)
 	}).Methods("GET")
 
-	authRouter.HandleFunc("/user", func(writer http.ResponseWriter, request *http.Request) {
-	 	controller.GetUser(writer, request)
+	noAuthRouter.HandleFunc("/user", func(writer http.ResponseWriter, request *http.Request) {
+	 	controller.GetUserById(writer, request)
 	 }).Methods("GET")
 
 	 //apply middleware
